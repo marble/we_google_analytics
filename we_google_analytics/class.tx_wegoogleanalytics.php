@@ -338,11 +338,19 @@ class tx_wegoogleanalytics extends tslib_pibase {
 		$gaAsync .= '<script type="text/javascript">'.chr(10);
 		$gaAsync .= '/* <![CDATA[ */'.chr(10);
 		$gaAsync .= " var _gaq = [['_setAccount', '".$this->conf['account']."'],".$anonymizeIp.$options." ['_trackPageview']".$trackpageload."];".chr(10);
-		$gaAsync .= " (function(d, t) {
-  var g = d.createElement(t); g.async = true;
-  g.src = ('https:' == d.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(g, s);
- })(document, 'script');
+#		$gaAsync .= " (function(d, t) {
+#  var g = d.createElement(t); g.async = true;
+#  g.src = ('https:' == d.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+#  var s = d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(g, s);
+# })(document, 'script');
+#/* ]]> */
+#</script>";
+
+		$gaAsync .= " (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
 /* ]]> */
 </script>";
 
