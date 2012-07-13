@@ -1,0 +1,30 @@
+2011-11-24 Andreas Becker - websedit AG <extensions@websedit.de>
+
+	* extended file tracking, you can define which type of files should be tracked
+	* changed the manual due to the bad online rendering
+
+2011-11-04 Andreas Becker - websedit AG <extensions@websedit.de>
+
+	* now stable version (due to the feedback)
+	* added support for pageload tracking
+	* added support for file tracking
+
+2010-12-28 Andreas Becker - websedit AG <extensions@websedit.de>
+
+	* added support for the _option-Tags like '_setDomainName' (not available within mobile tracking)
+	* integration of mobile tracking code (http://code.google.com/intl/en-EN/mobile/analytics/docs/web/)
+
+2010-11-24 Andreas Becker - websedit AG <extensions@websedit.de>
+
+	* set async-mode as default
+	* changed description
+	* extended README.txt
+
+2010-11-08 Andreas Becker - websedit AG <extensions@websedit.de>
+
+	* Correction in Warning message, if wrong Account Number is set
+	* Updated manual
+
+2010-10-22 Andreas Becker - websedit AG <extensions@websedit.de>
+
+	* Initial release
