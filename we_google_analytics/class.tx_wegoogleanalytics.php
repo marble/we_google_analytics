@@ -57,7 +57,6 @@ class tx_wegoogleanalytics extends tslib_pibase {
 		if (!$this->conf['account']) {
 			return;
 		}
-
 		$content = $this->process($this->content);
 	}
 
@@ -275,11 +274,43 @@ class tx_wegoogleanalytics extends tslib_pibase {
 		foreach ($this->conf as $param => $val) {
 			$param = htmlspecialchars($param);
 			if (is_array($val)) {
-				foreach ($val as $paramTwo => $valTwo) {
-					$paramTwo = htmlspecialchars($paramTwo);
-					$valTwo = htmlspecialchars($valTwo);
-					if (substr($paramTwo, 0, 1) == '_') {
-						$gaConf[$paramTwo] = $valTwo;
+				if (substr($param, 0, 1) !== '_' or $param === '_gaq' or $param === '_gat') {
+					foreach ($val as $paramTwo => $valTwo) {
+						$paramTwo = htmlspecialchars($paramTwo);
+						$valTwo = htmlspecialchars($valTwo);
+						if (substr($paramTwo, 0, 1) == '_') {
+							$gaConf[$paramTwo] = $valTwo;
+						}
+					}
+				} else {
+					/* Allow multiple calls for one param:
+					 * 	_addOrganic {
+					 * 		1 = 'suche.web.de', 'su'
+					 * 		2 = 'suche.t-online.de','q'
+					 * 		3 = 'suche.gmx.net','su'
+					 * 		4 = 'search.1und1.de','q'
+					 * 		5 = 'suche.freenet.de','query'
+					 * 	}
+					 * will give:
+					 *	 ['_addOrganic.', suche.web.de', 'su],
+					 *   ['_addOrganic.', suche.t-online.de','q],
+					 *   ['_addOrganic.', suche.gmx.net','su],
+					 *   ['_addOrganic.', search.1und1.de','q],
+					 *   ['_addOrganic.', suche.freenet.de','query], ... 
+					 */
+					if (isset($gaConf[$param])) {
+						if (is_array($gaConf[$param])) {
+							'pass';
+						} else {
+							$gaConf[$param] = array($gaConf[$param]);
+						}
+					} else {
+						$gaConf[$param] = array();
+					}
+					foreach ($val as $paramTwo => $valTwo) {
+						$paramTwo = htmlspecialchars($paramTwo);
+						$valTwo = htmlspecialchars($valTwo);
+						$gaConf[$param][] = $valTwo;
 					}
 				}
 			} else {
@@ -291,12 +322,17 @@ class tx_wegoogleanalytics extends tslib_pibase {
 		}
 
 		$options = '';
-		foreach ($gaConf as $param => $val) {
-			if ($val != 'true' && $val != 'false' && $val != '1' && $val != '0' && strpos($val, ',') === FALSE) {
-				$val = "'".$val."'";
+		foreach ($gaConf as $param => $val0) {
+			if (!is_array($val0)) {
+				$val0 = array($val0);
 			}
-			$val = str_replace('&amp;', '&', $val);
-			$options .= " ['".$param."', ".$val. "],";
+			foreach ($val0 as $val) {
+				if ($val != 'true' && $val != 'false' && $val != '1' && $val != '0' && strpos($val, ',') === FALSE) {
+					$val = "'" . $val . "'";
+				}
+				$val = str_replace('&amp;', '&', $val);
+				$options .= " ['" . $param . "', ".$val. "],";
+			}
 		}
 
 		$gaAsync .= '<script type="text/javascript">'.chr(10);
